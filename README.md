@@ -1,4 +1,11 @@
-# Etherpad Lite image for docker
+# Etherpad Lite image for Docker
+
+This is a fork of https://github.com/tvelocity/dockerfiles/etherpad-lite, which
+installs Etherpad from the current Git repository instead of the latest release.
+
+Bug fixes are frequent, but releases sparse.
+
+# Original description
 
 This is a docker image for [Etherpad Lite](http://etherpad.org/) collaborative
 text editor. The Dockerfile for this image has been inspired by the
@@ -33,7 +40,7 @@ $ docker run -d -e MYSQL_ROOT_PASSWORD=password --name ep_mysql mysql
 Finally you can start an instance of Etherpad Lite:
 
 ```bash
-$ docker run -d --link=ep_mysql:mysql -p 9001:9001 tvelocity/etherpad-lite
+$ docker run -d --link=ep_mysql:mysql -p 9001:9001 nasqueron/etherpad
 ```
 
 This will create an etherpad database to the mysql container, if it does not
