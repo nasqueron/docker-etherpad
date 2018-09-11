@@ -33,6 +33,9 @@ VOLUME /opt/etherpad-lite/var
 
 RUN ln -s /opt/etherpad-lite/var/settings.json /opt/etherpad-lite/settings.json
 
+# Production plug-ins installation, as a separate layer to reuse master
+RUN npm install ep_ether-o-meter && npm install ep_author_neat
+
 EXPOSE 9001
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "node_modules/ep_etherpad-lite/node/server.js"]
