@@ -20,6 +20,7 @@ RUN cd /opt && \
     rm settings.json
 
 COPY entrypoint.sh /entrypoint.sh
+
 VOLUME /opt/etherpad-lite/var
 
 RUN ln -s /opt/etherpad-lite/var/settings.json /opt/etherpad-lite/settings.json
