@@ -29,12 +29,9 @@ RUN bin/installDeps.sh && \
     npm install ep_author_neat && \
     rm settings.json
 
-COPY entrypoint.sh /entrypoint.sh
-
 VOLUME /opt/etherpad-lite/var
 
 RUN ln -s /opt/etherpad-lite/var/settings.json /opt/etherpad-lite/settings.json
 
 EXPOSE 9001
-ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "node_modules/ep_etherpad-lite/node/server.js"]
