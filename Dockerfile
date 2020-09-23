@@ -17,8 +17,14 @@ RUN apt update && \
 
 RUN cd /opt && \
     git clone https://github.com/ether/etherpad-lite && \
-    cd etherpad-lite && \
-    bin/installDeps.sh && \
+    useradd --uid 9001 --create-home etherpad && \
+    chown -R etherpad:0 /opt/etherpad-lite
+
+WORKDIR /opt/etherpad-lite
+USER etherpad
+
+RUN bin/installDeps.sh && \
+    rm -rf ~/.npm/_cacache && \
     rm settings.json
 
 COPY entrypoint.sh /entrypoint.sh
@@ -27,7 +33,6 @@ VOLUME /opt/etherpad-lite/var
 
 RUN ln -s /opt/etherpad-lite/var/settings.json /opt/etherpad-lite/settings.json
 
-WORKDIR /opt/etherpad-lite
 EXPOSE 9001
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bin/run.sh", "--root"]
+CMD ["node", "node_modules/ep_etherpad-lite/node/server.js"]
