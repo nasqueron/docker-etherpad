@@ -9,13 +9,11 @@ fi
 
 # if we're linked to MySQL, and we're using the root user, and our linked
 # container has a default "root" password set up and passed through... :)
-: ${ETHERPAD_DB_USER:=root}
+: "${ETHERPAD_DB_USER:=root}"
 if [ "$ETHERPAD_DB_USER" = 'root' ]; then
-	: ${ETHERPAD_DB_PASSWORD:=$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+	: "${ETHERPAD_DB_PASSWORD:=$MYSQL_ENV_MYSQL_ROOT_PASSWORD}"
 fi
-: ${ETHERPAD_DB_NAME:=etherpad}
-
-ETHERPAD_DB_NAME=$( echo $ETHERPAD_DB_NAME | sed 's/\./_/g' )
+: "${ETHERPAD_DB_NAME:=etherpad}"
 
 if [ -z "$ETHERPAD_DB_PASSWORD" ]; then
 	echo >&2 'error: missing required ETHERPAD_DB_PASSWORD environment variable'
@@ -25,21 +23,20 @@ if [ -z "$ETHERPAD_DB_PASSWORD" ]; then
 	exit 1
 fi
 
-: ${ETHERPAD_TITLE:=Etherpad}
-: ${ETHERPAD_PORT:=9001}
-: ${ETHERPAD_SESSION_KEY:=$(
-		node -p "require('crypto').randomBytes(32).toString('hex')")}
+: "${ETHERPAD_TITLE:=Etherpad}"
+: "${ETHERPAD_PORT:=9001}"
+: "${ETHERPAD_SESSION_KEY:=$(node -p "require('crypto').randomBytes(32).toString('hex')")}"
 
 # Check if database already exists
-RESULT=`mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} \
+RESULT=$(mysql -u"${ETHERPAD_DB_USER}" -p"${ETHERPAD_DB_PASSWORD}" \
 	-hmysql --skip-column-names \
-	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'"`
+	-e "SHOW DATABASES LIKE '${ETHERPAD_DB_NAME}'")
 
-if [ "$RESULT" != $ETHERPAD_DB_NAME ]; then
+if [ "$RESULT" != "$ETHERPAD_DB_NAME" ]; then
 	# mysql database does not exist, create it
 	echo "Creating database ${ETHERPAD_DB_NAME}"
 
-	mysql -u${ETHERPAD_DB_USER} -p${ETHERPAD_DB_PASSWORD} -hmysql \
+	mysql -u"${ETHERPAD_DB_USER}" -p"${ETHERPAD_DB_PASSWORD}" -hmysql \
 	      -e "create database ${ETHERPAD_DB_NAME}"
 fi
 
@@ -60,9 +57,9 @@ if [ ! -f settings.json ]; then
 			  },
 	EOF
 
-	if [ $ETHERPAD_ADMIN_PASSWORD ]; then
+	if [ "$ETHERPAD_ADMIN_PASSWORD" ]; then
 
-		: ${ETHERPAD_ADMIN_USER:=admin}
+		": ${ETHERPAD_ADMIN_USER:=admin}"
 
 		cat <<- EOF >> settings.json
 		  "users": {
