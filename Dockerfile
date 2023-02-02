@@ -26,7 +26,7 @@ USER etherpad
 RUN bin/installDeps.sh && \
     rm -rf ~/.npm/_cacache && \
     npm install ep_ether-o-meter && \
-    npm install ep_author_neat && \
+    npm install ep_author_neat2 && \
     rm settings.json
 
 VOLUME /opt/etherpad-lite/var
