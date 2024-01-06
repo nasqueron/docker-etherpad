@@ -2,7 +2,7 @@
 # Docker image for Etherpad
 #
 
-FROM debian:bullseye
+FROM debian:bookworm
 
 # Forked from Tony Motakis <tvelocity@gmail.com>
 MAINTAINER Sébastien Santoro aka Dereckson <dereckson+nasqueron-docker@espace-win.org>
@@ -11,7 +11,7 @@ ENV NODE_ENV=production
 
 RUN apt update && \
     apt install -y curl unzip mariadb-client git sudo libssl-dev pkg-config build-essential abiword && \
-    curl -sL https://deb.nodesource.com/setup_14.x | bash && \
+    curl -sL https://deb.nodesource.com/setup_18.x | bash && \
     apt install -y nodejs && \
     rm -r /var/lib/apt/lists/*
 
