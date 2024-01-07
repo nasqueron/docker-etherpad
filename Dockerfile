@@ -24,7 +24,7 @@ RUN cd /opt && \
 WORKDIR /opt/etherpad-lite
 USER etherpad
 
-RUN src/bin/installDeps.sh && \    
+RUN src/bin/installDeps.sh && \
     rm -rf ~/.npm && \
     rm settings.json
 
