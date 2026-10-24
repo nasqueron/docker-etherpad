@@ -2,40 +2,48 @@
 # Docker image for Etherpad
 #
 
-FROM debian:bookworm
+FROM node:24-trixie
 
 # Forked from Tony Motakis <tvelocity@gmail.com>
-MAINTAINER Sébastien Santoro aka Dereckson <dereckson+nasqueron-docker@espace-win.org>
+LABEL maintainer="Sébastien Santoro aka Dereckson <dereckson+nasqueron-docker@espace-win.org>"
 
 ENV NODE_ENV=production
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && \
-    apt install -y curl unzip mariadb-client git sudo libssl-dev pkg-config build-essential abiword && \
-    curl -sL https://deb.nodesource.com/setup_18.x | bash && \
-    apt install -y nodejs && \
-    rm -r /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        unzip \
+        mariadb-client \
+        git \
+        sudo \
+        libssl-dev \
+        pkg-config \
+        build-essential \
+        libreoffice-writer \
+        bash && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN cd /opt && \
     git clone https://github.com/ether/etherpad-lite && \
     useradd --uid 9001 --create-home etherpad && \
     chown -R etherpad:0 /opt/etherpad-lite && \
-    npm install npm@6 -g
+    corepack enable && \
+    corepack prepare pnpm@12.4.2 --activate
 
 WORKDIR /opt/etherpad-lite
 USER etherpad
 
-RUN src/bin/installDeps.sh && \
-    rm -rf ~/.npm && \
-    rm settings.json
-
-USER root
-RUN cd src && npm link
-USER etherpad
+RUN bin/installDeps.sh && \
+    pnpm store prune && \
+    rm -f settings.json
 
 VOLUME /opt/etherpad-lite/var
 
 RUN ln -s /opt/etherpad-lite/var/settings.json /opt/etherpad-lite/settings.json
 
+COPY entrypoint.sh /
+
 EXPOSE 9001
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["etherpad"]
+CMD ["sh", "-c", "cd /opt/etherpad-lite/src && exec node --require tsx/cjs node/server.ts"]

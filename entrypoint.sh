@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+if [ -f settings.json ]; then
+    # Nothing to setup
+    exec "$@"
+    exit 0
+fi
+
 if [ -z "$MYSQL_PORT_3306_TCP_ADDR" ]; then
 	echo >&2 'error: missing MYSQL_PORT_3306_TCP environment variable'
 	echo >&2 '  Did you forget to --link some_mysql_container:mysql ?'
